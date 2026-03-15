@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "827879658861",
+    "project_id": "simplecurrency-9f0d3",
+    "storage_bucket": "simplecurrency-9f0d3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827879658861:android:7f7ec4f9c0a2aa058eb664",
+        "android_client_info": {
+          "package_name": "com.example.simple_currency"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdaPOs3uCe-Qqbw2Ntv3oahj4vEOXfRbk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

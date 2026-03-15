@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function owner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function validPreferences() {
+      return request.resource.data.baseCurrency is string
+        && request.resource.data.convertFrom is string
+        && request.resource.data.convertTo is string
+        && request.resource.data.converterAmount is number
+        && request.resource.data.analyticsBase is string
+        && request.resource.data.analyticsTarget is string
+        && request.resource.data.themeMode is string
+        && request.resource.data.favorites is list
+        && request.resource.data.quickPairs is list;
+    }
+
+    function validCategory(categoryId) {
+      return request.resource.data.id == categoryId
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.kind in ['expense', 'income']
+        && request.resource.data.iconCodePoint is int
+        && request.resource.data.colorValue is int;
+    }
+
+    function validTransaction(transactionId) {
+      return request.resource.data.id == transactionId
+        && request.resource.data.categoryId is string
+        && request.resource.data.kind in ['expense', 'income']
+        && request.resource.data.amount is number
+        && request.resource.data.amount > 0
+        && request.resource.data.createdAt is string;
+    }
+
+    match /simple_currency_users/{userId} {
+      allow read, write: if owner(userId);
+
+      match /meta/preferences {
+        allow read: if owner(userId);
+        allow create, update: if owner(userId) && validPreferences();
+        allow delete: if false;
+      }
+
+      match /wallet_categories/{categoryId} {
+        allow read: if owner(userId);
+        allow create, update: if owner(userId) && validCategory(categoryId);
+        allow delete: if owner(userId);
+      }
+
+      match /wallet_transactions/{transactionId} {
+        allow read: if owner(userId);
+        allow create, update: if owner(userId) && validTransaction(transactionId);
+        allow delete: if owner(userId);
+      }
+    }
+  }
+}
